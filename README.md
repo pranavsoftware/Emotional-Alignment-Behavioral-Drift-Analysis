@@ -1,196 +1,202 @@
 # Emotional Alignment & Behavioral Drift Analysis
 
-A comprehensive research framework for analyzing emotion detection consistency and behavioral drift in NLP models using the GoEmotions emotion classification system.
+A research framework for analyzing emotional consistency and behavioral drift in NLP models using the GoEmotions emotion classification system.
 
 ## Overview
 
-This research project investigates how emotion detection models maintain consistency across repeated inputs and detect behavioral drift in emotional categorization. By leveraging the GoEmotions model from Hugging Face, the study processes 28 distinct emotions and evaluates model performance across multiple emotional contexts.
+This project investigates how well emotion detection models maintain consistency when processing emotionally-charged text. It measures "behavioral drift" - the tendency of model outputs to change when given identical or semantically similar inputs - across different emotional contexts.
 
-## Key Features
+### Key Features
 
-- **Emotion Detection Pipeline**: Utilizes the SamLowe/roberta-base-go_emotions model for multi-label emotion classification
-- **Consistency Analysis**: Measures behavioral consistency through cosine similarity analysis of emotion vectors
-- **Drift Metrics**: Calculates and tracks behavioral drift across repeated prompts
-- **Comprehensive Visualization**: Generates four-panel analysis plots showing emotion distributions and drift patterns
-- **Detailed Reporting**: Exports results to CSV for further statistical analysis
+- Multi-emotion detection using the GoEmotions model (28 emotion categories)
+- Consistency and behavioral drift metrics calculation
+- Comprehensive visualization suite
+- Detailed CSV reporting for further analysis
+- Support for various emotional contexts: happy, sad, angry, neutral, and mixed emotions
 
-## Research Methodology
+## Table of Contents
 
-### Experiment Design
-
-The study tests five emotional categories with multiple prompts per category:
-
-- **Happy**: Positive emotion prompts expressing joy and excitement
-- **Sad**: Negative emotion prompts expressing sadness and grief
-- **Angry**: Aggressive emotion prompts expressing rage and frustration
-- **Neutral**: Factual, emotionally neutral statements
-- **Mixed**: Prompts containing multiple conflicting emotions
-
-Each prompt is processed 3 times to detect consistency and drift patterns across identical inputs.
-
-### Metrics Calculated
-
-**Consistency Score**: Average cosine similarity between successive emotion vector representations (0 to 1 scale, where 1 is perfect consistency)
-
-**Behavioral Drift**: Inverse of consistency, representing deviation from expected behavior (calculated as 1 - consistency)
-
-**Standard Deviation**: Measures variability in similarity scores across repeats
-
-**Average Top Emotion Score**: Mean confidence score of the primary detected emotion
-
-## Results Summary
-
-Based on 45 processed samples across 5 emotional categories:
-
-| Category | Samples | Consistency | Drift   | Std Dev | Avg Top Score |
-|----------|---------|-------------|---------|---------|---------------|
-| Angry    | 9       | 0.9995      | 0.0005  | 0.0012  | 0.8391        |
-| Sad      | 9       | 0.9539      | 0.0461  | 0.1210  | 0.7830        |
-| Neutral  | 9       | 0.9484      | 0.0516  | 0.0895  | 0.6982        |
-| Happy    | 9       | 0.8915      | 0.1085  | 0.2058  | 0.6280        |
-| Mixed    | 9       | 0.7620      | 0.2380  | 0.4125  | 0.7625        |
-
-### Key Findings
-
-The model demonstrates exceptional consistency across all emotional categories, with particularly strong performance on anger classification (99.95% consistency). Sadness and neutral categories show robust consistency scores above 94%. Mixed emotions exhibit the highest drift (23.8%), indicating that complex emotional contexts introduce greater variability in detection. The relatively lower consistency in happy emotions (89.15%) suggests that positive emotions have more nuanced expressions with higher variation.
-
-## Sample Results Visualization
-
-![Emotional Alignment & Behavioral Drift Analysis](sample-results.png)
-
-The analysis produces a four-panel visualization:
-
-- **Top-Left Panel**: Dominant emotion detection frequency by category, showing the primary emotional classification for each prompt category
-- **Top-Right Panel**: Emotion detection heatmap displaying the distribution of all 28 detected emotions across categories
-- **Bottom-Left Panel**: Behavioral drift versus consistency comparison, highlighting the inverse relationship and relative stability of each category
-- **Bottom-Right Panel**: Distribution of top emotion scores, showing confidence levels across different emotional contexts
-
-## Installation & Setup
-
-### Requirements
-
-- Python 3.7 or higher
-- PyTorch (with CUDA support optional)
-- Transformers (Hugging Face)
-- Pandas, NumPy, Matplotlib, Seaborn
-- scikit-learn, SciPy
-
-### Quick Start
-
-```bash
-pip install transformers torch pandas numpy matplotlib seaborn scikit-learn scipy openpyxl
-```
-
-Then run the main script:
-
-```bash
-python emotion_analysis.py
-```
-
-## Usage
-
-### Basic Emotion Detection
-
-```python
-from transformers import pipeline
-
-classifier = pipeline(
-    task="text-classification",
-    model="SamLowe/roberta-base-go_emotions",
-    top_k=None,
-    device=0  # Use -1 for CPU
-)
-
-result = classifier("I'm feeling absolutely wonderful today!")
-```
-
-### Running the Complete Study
-
-```python
-study = EmotionalAlignmentStudy(
-    model_name="SamLowe/roberta-base-go_emotions",
-    sample_prompts=3,
-    repeats=3
-)
-
-results = study.run_experiment()
-consistency_metrics = study.calculate_consistency_metrics()
-study.create_visualizations()
-df_results = study.save_results_to_csv()
-```
-
-### Customization
-
-Modify the `emotional_prompts` dictionary to test different text inputs:
-
-```python
-emotional_prompts = {
-    "your_category": [
-        "Your test prompt 1",
-        "Your test prompt 2",
-        "Your test prompt 3",
-    ]
-}
-```
-
-Adjust experimental parameters:
-
-```python
-study = EmotionalAlignmentStudy(
-    model_name="SamLowe/roberta-base-go_emotions",
-    sample_prompts=5,  # Test 5 prompts per category
-    repeats=5          # Repeat each prompt 5 times
-)
-```
-
-## Detected Emotions
-
-The GoEmotions model detects 28 distinct emotions:
-
-admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, neutral, optimism, pride, realization, relief, remorse, sadness, surprise
-
-## Output Files
-
-The research generates two output files:
-
-**emotional_alignment_analysis.png**: Four-panel visualization containing emotion detection patterns, heatmaps, consistency metrics, and score distributions
-
-**emotion_research_results.csv**: Detailed results for all processed samples including timestamps, category labels, emotion scores for all 28 emotions, top emotions, and confidence scores
-
-## Model Information
-
-**Model**: SamLowe/roberta-base-go_emotions
-
-**Architecture**: RoBERTa-base fine-tuned on GoEmotions dataset
-
-**Capabilities**: Multi-label emotion classification with 28 emotion categories
-
-**Download**: https://huggingface.co/SamLowe/roberta-base-go_emotions
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Research Methodology](#research-methodology)
+- [Results](#results)
+- [Output Files](#output-files)
+- [Team](#team)
+- [Model Information](#model-information)
 
 ## Project Structure
 
 ```
 .
-├── emotion_analysis.py              # Main research script
-├── README.md                        # This file
-├── emotional_alignment_analysis.png # Sample visualization output
-└── emotion_research_results.csv     # Sample results data
+├── emotion_alignment_analysis.py    # Main research script
+├── emotion_research_results.csv      # Detailed experimental results
+├── emotional_alignment_analysis.png  # Visualization output
+└── README.md                         # This file
 ```
 
-## Computational Performance
+## Installation
 
-- Model Load Time: ~18 seconds (first run)
-- Processing Time per Prompt: ~50-100ms
-- Total Experiment Time (45 samples): ~2-3 minutes on CPU
-- Memory Usage: ~2GB (with GPU acceleration significantly faster)
+### Requirements
 
-## Citation
+- Python 3.8+
+- PyTorch
+- Hugging Face Transformers
+- Pandas, NumPy, SciPy, Scikit-learn
+- Matplotlib, Seaborn
 
-If you use this research in your work, please cite:
+### Setup
+
+```bash
+# Install required packages
+pip install transformers torch pandas numpy matplotlib seaborn scikit-learn scipy openpyxl
+
+# Clone or download this repository
+git clone <repository-url>
+cd emotional-alignment-analysis
+```
+
+## Usage
+
+### Basic Execution
+
+```python
+# Run the complete research experiment
+python emotion_alignment_analysis.py
+```
+
+### Customizing Parameters
+
+Modify the study initialization parameters to adjust the experiment:
+
+```python
+study = EmotionalAlignmentStudy(
+    model_name="SamLowe/roberta-base-go_emotions",
+    sample_prompts=3,  # Number of prompts per category
+    repeats=3          # Number of times to repeat each prompt
+)
+```
+
+### Key Parameters
+
+| Parameter | Type | Description | Default |
+|-----------|------|-------------|---------|
+| `model_name` | str | HuggingFace model identifier | `SamLowe/roberta-base-go_emotions` |
+| `sample_prompts` | int | Number of test prompts per emotion category | 3 |
+| `repeats` | int | Number of times to process each prompt | 3 |
+
+## Research Methodology
+
+### Experimental Design
+
+1. **Prompt Generation**: Five emotion categories with 5 test prompts each
+   - Happy: Positive-oriented prompts
+   - Sad: Negative-oriented prompts
+   - Angry: Rage and frustration-oriented prompts
+   - Neutral: Factual, non-emotional statements
+   - Mixed: Prompts combining multiple emotions
+
+2. **Emotion Detection**: Each prompt is processed multiple times through the GoEmotions model to detect emotional content across 28 emotion categories
+
+3. **Metrics Calculation**:
+   - **Consistency Score**: Measures the stability of emotion detection across identical prompts
+   - **Behavioral Drift**: Inverse of consistency; indicates deviation between repeated runs
+   - **Standard Deviation**: Variance in emotion scores across samples
+   - **Top Emotion Score**: Average confidence of the primary detected emotion
+
+### Emotional Categories Detected
+
+The GoEmotions model detects 28 distinct emotions:
+
+admiration, amusement, anger, annoyance, approval, caring, confusion, curiosity, desire, disappointment, disapproval, disgust, embarrassment, excitement, fear, gratitude, grief, joy, love, nervousness, neutral, optimism, pride, realization, relief, remorse, sadness, surprise
+
+## Results
+
+### Sample Output Visualization
+
+![Emotional Alignment & Behavioral Drift Analysis](./sample result.png)
+
+### Key Findings
+
+The analysis demonstrates the following consistency metrics across emotion categories:
+
+| Category | Consistency Score | Behavioral Drift | Std Deviation | Avg Top Score |
+|----------|-------------------|------------------|---------------|---------------|
+| Angry | 0.9995 | 0.0005 | 0.0012 | 0.8391 |
+| Sad | 0.9539 | 0.0461 | 0.1210 | 0.7830 |
+| Neutral | 0.9484 | 0.0516 | 0.0895 | 0.6982 |
+| Happy | 0.8915 | 0.1085 | 0.2058 | 0.6280 |
+| Mixed | 0.7620 | 0.2380 | 0.4125 | 0.7625 |
+
+#### Interpretation
+
+- **Anger Detection**: Demonstrates the highest consistency (0.9995) with minimal drift, suggesting the model is highly reliable for detecting angry sentiment
+- **Mixed Emotions**: Shows the lowest consistency (0.7620), indicating challenges in detecting complex emotional blends
+- **Neutral Content**: Maintains strong consistency (0.9484), reflecting the model's ability to distinguish factual statements
+- **Happy/Positive Content**: Moderate consistency (0.8915) suggests variability in how positive emotions are classified
+
+## Output Files
+
+### 1. `emotional_alignment_analysis.png`
+
+Four-panel visualization containing:
+
+- **Dominant Emotion Detection by Category**: Bar chart showing frequency of primary emotions detected per category
+- **Emotion Detection Heatmap**: Heatmap visualization of emotion frequencies across all categories and detected emotions
+- **Behavioral Drift vs Consistency**: Comparative bar chart showing drift and consistency scores by category
+- **Top Emotion Score Distribution**: Histogram displaying the distribution of primary emotion scores
+
+### 2. `emotion_research_results.csv`
+
+Detailed results file containing:
+
+- Timestamp of each analysis
+- Emotion category
+- Full prompt text
+- Prompt index and repeat number
+- Top detected emotion and its confidence score
+- Individual scores for all 28 emotion categories
+
+## Model Information
+
+### GoEmotions Model
+
+- **Model Name**: `SamLowe/roberta-base-go_emotions`
+- **Base Architecture**: RoBERTa (Robustly Optimized BERT)
+- **Emotions**: 28 distinct emotional categories
+- **Training Data**: GoEmotions dataset (58K Reddit comments)
+- **Performance**: State-of-the-art for emotion classification on social media text
+- **Download**: [HuggingFace Model Hub](https://huggingface.co/SamLowe/roberta-base-go_emotions)
+
+### Model Parameters
+
+- Default emotion threshold: 0.5
+- Device: GPU (if available) or CPU
+- Tokenizer: RoBERTa tokenizer
+- Input: Text strings of arbitrary length
+
+## Team
+
+This research was conducted by:
+
+- **Pranav Rayban** - [GitHub](https://github.com/pranavsoftware)
+- **Arya Nagvekar** - [GitHub](https://github.com/Red2Ninja)
+- **Ajitesh Sharma** - [GitHub](https://github.com/AJ1312)
+
+## Requirements
+
+### Dependencies
 
 ```
-Emotional Alignment & Behavioral Drift Analysis (2024)
-Using GoEmotions Model - https://huggingface.co/SamLowe/roberta-base-go_emotions
+transformers>=4.25.0
+torch>=1.10.0
+pandas>=1.3.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+scikit-learn>=1.0.0
+scipy>=1.7.0
+openpyxl>=3.6.0
 ```
 
 ## License
@@ -199,29 +205,28 @@ This project is provided as-is for research and educational purposes.
 
 ## Contributing
 
-Contributions and improvements are welcome. Please submit issues or pull requests with:
+Contributions are welcome. Please feel free to submit pull requests or open issues for bugs and feature requests.
 
-- Bug reports with reproducible examples
-- Suggestions for additional emotion categories
-- Improvements to visualization and analysis methods
-- Performance optimizations
+## Citation
 
-## Contact & Support
+If you use this research framework in your work, please cite:
 
-For questions or issues regarding this research:
-
-- Review the inline code documentation
-- Check the Hugging Face model card: https://huggingface.co/SamLowe/roberta-base-go_emotions
-- Consult the research output CSV for detailed analysis results
+```
+Emotional Alignment & Behavioral Drift Analysis
+Pranav Rayban, Arya Nagvekar, Ajitesh Sharma
+2025
+```
 
 ## References
 
-- GoEmotions Dataset: https://github.com/google-research/google-research/tree/master/goemotions
-- Transformers Library: https://huggingface.co/docs/transformers/
-- RoBERTa Model: https://arxiv.org/abs/1907.11692
+- GoEmotions Model: [Paper](https://arxiv.org/abs/2005.00547)
+- RoBERTa: [Robustly Optimized BERT](https://arxiv.org/abs/1907.11692)
+- HuggingFace Transformers: [Documentation](https://huggingface.co/docs/transformers/)
+
+## Support
+
+For questions or issues, please contact the project team or open an issue in the repository.
 
 ---
 
-**Last Updated**: October 2024
-
-**Status**: Active Research Project
+**Last Updated**: October 2025
